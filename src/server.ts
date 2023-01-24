@@ -8,10 +8,6 @@ import {
 } from './dash';
 import { fetch } from 'undici';
 
-function log(...args: any) {
-  console.log(`[Server]`, ...args);
-}
-
 const manifestUrl = process.argv[2];
 const whepUrl = process.argv[3];
 if (!manifestUrl || !whepUrl) {
@@ -23,16 +19,13 @@ const server = fastify();
 server.register(cors);
 
 server.get('/manifest.mpd', async (request, reply) => {
-  const manifestText = await (await fetch(manifestUrl)).text();
+  const xml = await (await fetch(manifestUrl)).text();
 
-  const manifest = parseManifest(manifestText);
+  const manifest = parseManifest(xml);
   updateBaseURL(manifest, manifestUrl);
   addWHEPAdaptionSet(manifest, whepUrl);
-  const xml = buildManifest(manifest);
-  if (!xml) {
-    return reply.code(500).send('Failed to build manifest');
-  }
-  return reply.send(xml);
+
+  return reply.send(buildManifest(manifest));
 });
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 8000;
@@ -41,5 +34,5 @@ server.listen({ port: PORT, host: '0.0.0.0' }, (err, address) => {
   if (err) {
     throw err;
   }
-  log(`WebRTC/DASH Manifest available at ${address}/manifest.mpd`);
+  console.log(`WebRTC/DASH Manifest available at ${address}/manifest.mpd`);
 });

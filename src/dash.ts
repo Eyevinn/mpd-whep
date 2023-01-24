@@ -22,13 +22,14 @@ export function buildManifest(manifest: any[]): string {
 }
 
 export function updateBaseURL(manifest: any[], manifestUrl: string) {
+  // remove manifest path from url
   const baseUrl = manifestUrl.replace(/\/[^/]*$/, '/');
 
   const mpdEl = manifest.find((el: any) => !!el.MPD);
   const baseUrlEl = mpdEl.MPD.find((el: any) => !!el.BaseURL);
 
   if (baseUrlEl) {
-    // if baseUrl is an absolut url do nothing but if it's a relative path then replace it with baseUrl + the relative path
+    // only update if the baseURL is relative
     if (baseUrlEl.BaseURL[0]?.["#text"]?.startsWith('http')) {
       return;
     }
@@ -43,11 +44,12 @@ export function updateBaseURL(manifest: any[], manifestUrl: string) {
   }
 }
 
-// insert an adaptionset with a representation for the whep stream into the provided xmlstring
+// insert an AdaptionSet with a Representation for the WHEP stream into the provided manifest
 export function addWHEPAdaptionSet(manifest: any[], whep: string) {
   const mpdEl = manifest.find((el: any) => !!el.MPD);
   const periodEl = mpdEl.MPD.find((el: any) => !!el.Period);
 
+  // The attributes below are placeholder ones until we have a better understanding of what they should be
   periodEl.Period.push({
     AdaptationSet: [
       {

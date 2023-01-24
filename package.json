@@ -2,14 +2,12 @@
   "name": "@eyevinn/mpd-whep",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon",
     "start": "ts-node -T src/server.ts"
   },
-  "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@fastify/cors": "^8.2.0",
     "fast-xml-parser": "^4.0.14",
